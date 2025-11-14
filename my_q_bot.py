@@ -52,6 +52,9 @@ def normalize_action(action):
 
 class MyQBot(Player):
     """Q-Learning bot using trained neural network."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"!!! MyQBot initialized with color {self.color} !!!")
 
     def decide(self, game, playable_actions):
         """Choose action with highest predicted Q-value."""
@@ -61,18 +64,25 @@ class MyQBot(Player):
         # Create state vector
         state = create_sample_vector(game, self.color, FEATURES)
 
-        # Create input samples: state + action encoding for each possible action
+        # Create input samples
         samples = []
         for action in playable_actions:
             samples.append(np.concatenate((state, encode_action(action))))
         X = np.array(samples)
 
-        # Predict Q-values for all state-action pairs
-        q_values = Q_MODEL.predict(X, verbose=0)
+        # Predict Q-values
+        q_values = Q_MODEL.predict(X, verbose=0).flatten()
 
-        # Choose action with highest Q-value
-        best_action_idx = np.argmax(q_values)
-        return playable_actions[best_action_idx]
+        # DEBUG: Print what we're seeing
+        print(f"\n=== Turn {game.state.num_turns} ===")
+        print(f"Num actions: {len(playable_actions)}")
+        print(f"Q-values: min={q_values.min():.3f}, max={q_values.max():.3f}, mean={q_values.mean():.3f}")
+        
+        best_idx = np.argmax(q_values)
+        chosen_action = playable_actions[best_idx]
+        print(f"Chose: {chosen_action.action_type} (Q={q_values[best_idx]:.3f})")
+        
+        return chosen_action
 
 
 # Register the bot for CLI use
