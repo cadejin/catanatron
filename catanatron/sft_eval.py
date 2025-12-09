@@ -5,6 +5,7 @@ from catanatron.players.minimax import AlphaBetaPlayer
 from catanatron.players.weighted_random import WeightedRandomPlayer
 from catanatron.players.search import VictoryPointPlayer
 from catanatron.game import Game
+from catanatron.cli import register_cli_player
 
 model_path = "policy_sft.pt"
 checkpoint = torch.load(model_path)
@@ -59,6 +60,10 @@ class PolicyPlayer:
 
         return random.choice(actions)
 
+    def reset_state(self):
+        """Hook for resetting state between games"""
+        pass
+
 def play_match(playerA_cls, playerB_cls, num_games=10):
     wins = {Color.RED: 0, Color.BLUE: 0}
     for game_idx in range(num_games):
@@ -81,6 +86,11 @@ def play_match(playerA_cls, playerB_cls, num_games=10):
         wins[winner] += 1
 
     return wins[Color.RED], wins[Color.BLUE]
+
+def SFTPlayer(color):
+    return PolicyPlayer(color, model, idx2action)
+
+register_cli_player("SFT", SFTPlayer)
 
 if __name__ == "__main__":
     print("Loaded SFT model")
