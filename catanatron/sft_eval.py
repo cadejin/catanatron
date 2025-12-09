@@ -65,14 +65,18 @@ class PolicyPlayer:
         pass
 
 def play_match(playerA_cls, playerB_cls, num_games=10):
-    wins = {Color.RED: 0, Color.BLUE: 0}
+    playerA_wins = 0
+    playerB_wins = 0
+
     for game_idx in range(num_games):
         if game_idx % 2 == 0:
             red_player = playerA_cls(Color.RED)
             blue_player = playerB_cls(Color.BLUE)
+            playerA_color = Color.RED
         else:
             red_player = playerB_cls(Color.RED)
             blue_player = playerA_cls(Color.BLUE)
+            playerA_color = Color.BLUE
 
         game = Game([red_player, blue_player])
 
@@ -83,9 +87,12 @@ def play_match(playerA_cls, playerB_cls, num_games=10):
             game.execute(action)
 
         winner = game.winning_color()
-        wins[winner] += 1
+        if winner == playerA_color:
+            playerA_wins += 1
+        else:
+            playerB_wins += 1
 
-    return wins[Color.RED], wins[Color.BLUE]
+    return playerA_wins, playerB_wins
 
 def SFTPlayer(color):
     return PolicyPlayer(color, model, idx2action)
