@@ -179,6 +179,10 @@ class State:
             self.acceptees = tuple(False for _ in self.colors)
 
             self.playable_actions = generate_playable_actions(self)
+    
+    def current_player(self):
+        """Helper for accessing Player instance who should decide next"""
+        return self.players[self.current_player_index]
 
     def current_color(self):
         """Helper for accessing color (player) who should decide next"""
