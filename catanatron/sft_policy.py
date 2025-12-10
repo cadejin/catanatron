@@ -15,7 +15,7 @@ from catanatron.players.value import ValueFunctionPlayer
 from catanatron.models.enums import RESOURCES
 from catanatron.state_functions import player_key
 
-DATASET_PATH = "sft_dataset.pkl"
+DATASET_PATH = "sft_dataset1.pkl"
 MODEL_PATH = "policy_sft.pt"
 
 SEED = 42
@@ -42,7 +42,7 @@ def encode_state(state):
 
 def generate_expert_data(num_games=500):
     X, Y = [], []
-    player_types = [AlphaBetaPlayer, WeightedRandomPlayer, VictoryPointPlayer, RandomPlayer, ValueFunctionPlayer]
+    player_types = [AlphaBetaPlayer, ValueFunctionPlayer]
 
     for _ in range(num_games):
         print(f'generating game {_}', flush=True)
